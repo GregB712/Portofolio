@@ -15,7 +15,7 @@ const nodes = [
   ["44%", "84%"]
 ];
 
-export function HeroSection() {
+export function HeroSection({ avatarUrl }: { avatarUrl: string }) {
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="ai-field" aria-hidden>
@@ -92,7 +92,7 @@ export function HeroSection() {
           </div>
           <div className="relative aspect-[4/5] overflow-hidden rounded-md border border-[var(--line)] bg-black">
             <Image
-              src="https://github.com/GregB712.png"
+              src={avatarUrl}
               alt="Gregory Barmpas GitHub avatar"
               fill
               priority

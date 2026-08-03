@@ -7,6 +7,7 @@ import { experience } from "@/content/experience";
 import { profile } from "@/content/profile";
 import { skillGroups } from "@/content/skills";
 import { trackPageView } from "@/lib/analytics";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +17,16 @@ export const metadata: Metadata = {
 };
 
 export default async function CvPage() {
-  await trackPageView("/cv");
+  const [profilePhoto] = await Promise.all([
+    prisma.profilePhoto.findUnique({
+      where: { id: "main" },
+      select: {
+        altText: true,
+        updatedAt: true
+      }
+    }),
+    trackPageView("/cv")
+  ]);
 
   return (
     <main className="px-4 py-14 sm:px-6 lg:px-8">
@@ -33,13 +43,27 @@ export default async function CvPage() {
         </div>
         <article className="glass-strong rounded-lg p-6 sm:p-10">
           <header className="border-b border-[var(--line)] pb-6">
-            <Badge>{profile.location}</Badge>
-            <h1 className="mt-4 text-4xl font-semibold">{profile.name}</h1>
-            <p className="mt-2 text-lg text-[var(--muted)]">{profile.role}</p>
-            <p className="mt-4 max-w-3xl leading-7">{profile.summary}</p>
-            <p className="mt-4 text-sm text-[var(--muted)]">
-              {profile.email} | github.com/GregB712 | linkedin.com/in/gbarmpas
-            </p>
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <Badge>{profile.location}</Badge>
+                <h1 className="mt-4 text-4xl font-semibold">{profile.name}</h1>
+                <p className="mt-2 text-lg text-[var(--muted)]">{profile.role}</p>
+                <p className="mt-4 max-w-3xl leading-7">{profile.summary}</p>
+                <p className="mt-4 text-sm text-[var(--muted)]">
+                  {profile.email} | github.com/GregB712 | linkedin.com/in/gbarmpas
+                </p>
+              </div>
+              {profilePhoto ? (
+                <div className="h-36 w-36 shrink-0 overflow-hidden rounded-lg border border-[var(--line)] bg-white/5 sm:h-40 sm:w-40">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/api/profile-photo?updated=${profilePhoto.updatedAt.getTime()}`}
+                    alt={profilePhoto.altText}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              ) : null}
+            </div>
           </header>
 
           <section className="mt-8">

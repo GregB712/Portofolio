@@ -151,3 +151,53 @@ export async function deleteContactAction(formData: FormData) {
   await prisma.contactSubmission.delete({ where: { id: String(formData.get("id")) } });
   revalidatePath("/admin/contact");
 }
+
+export async function uploadProfilePhotoAction(formData: FormData) {
+  await assertAdmin();
+
+  const file = formData.get("photo");
+  if (!(file instanceof File) || file.size === 0) {
+    throw new Error("Please choose an image file.");
+  }
+
+  const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+  if (!allowedTypes.has(file.type)) {
+    throw new Error("Profile photo must be a JPG, PNG, or WebP image.");
+  }
+
+  const maxBytes = 4 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    throw new Error("Profile photo must be smaller than 4MB.");
+  }
+
+  const bytes = new Uint8Array(await file.arrayBuffer());
+
+  await prisma.profilePhoto.upsert({
+    where: { id: "main" },
+    create: {
+      id: "main",
+      imageBytes: bytes,
+      mimeType: file.type,
+      fileName: file.name || null
+    },
+    update: {
+      imageBytes: bytes,
+      mimeType: file.type,
+      fileName: file.name || null
+    }
+  });
+
+  revalidatePath("/cv");
+  revalidatePath("/admin/settings");
+}
+
+export async function deleteProfilePhotoAction() {
+  await assertAdmin();
+
+  await prisma.profilePhoto.deleteMany({
+    where: { id: "main" }
+  });
+
+  revalidatePath("/cv");
+  revalidatePath("/admin/settings");
+}
