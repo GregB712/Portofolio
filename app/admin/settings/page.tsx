@@ -17,15 +17,30 @@ const requiredEnv = [
 
 export const dynamic = "force-dynamic";
 
+async function getProfilePhotoPreview() {
+  try {
+    return {
+      photo: await prisma.profilePhoto.findUnique({
+        where: { id: "main" },
+        select: {
+          fileName: true,
+          mimeType: true,
+          updatedAt: true
+        }
+      }),
+      error: null
+    };
+  } catch {
+    return {
+      photo: null,
+      error:
+        "The profile photo table is not available yet. Run `npx prisma migrate deploy` against the production Neon database, then redeploy or reload."
+    };
+  }
+}
+
 export default async function AdminSettingsPage() {
-  const profilePhoto = await prisma.profilePhoto.findUnique({
-    where: { id: "main" },
-    select: {
-      fileName: true,
-      mimeType: true,
-      updatedAt: true
-    }
-  });
+  const { photo: profilePhoto, error: profilePhotoError } = await getProfilePhotoPreview();
 
   return (
     <>
@@ -35,6 +50,11 @@ export default async function AdminSettingsPage() {
         <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
           Upload a JPG, PNG, or WebP portrait. The image is stored in the database and shown on the web CV page.
         </p>
+        {profilePhotoError ? (
+          <div className="mt-4 rounded-md border border-[var(--accent-3)] bg-white/5 p-3 text-sm leading-6 text-[var(--accent-3)]">
+            {profilePhotoError}
+          </div>
+        ) : null}
         <div className="mt-5 grid gap-5 lg:grid-cols-[180px_1fr]">
           <div className="aspect-square overflow-hidden rounded-lg border border-[var(--line)] bg-white/5">
             {profilePhoto ? (

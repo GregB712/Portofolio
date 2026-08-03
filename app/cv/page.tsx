@@ -16,15 +16,23 @@ export const metadata: Metadata = {
   description: "Print-friendly web CV for Gregory Barmpas, Data Scientist and AI Engineer."
 };
 
-export default async function CvPage() {
-  const [profilePhoto] = await Promise.all([
-    prisma.profilePhoto.findUnique({
+async function getProfilePhoto() {
+  try {
+    return prisma.profilePhoto.findUnique({
       where: { id: "main" },
       select: {
         altText: true,
         updatedAt: true
       }
-    }),
+    });
+  } catch {
+    return null;
+  }
+}
+
+export default async function CvPage() {
+  const [profilePhoto] = await Promise.all([
+    getProfilePhoto(),
     trackPageView("/cv")
   ]);
 

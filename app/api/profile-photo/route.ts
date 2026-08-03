@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const photo = await prisma.profilePhoto.findUnique({
     where: { id: "main" }
-  });
+  }).catch(() => null);
 
   if (!photo) {
     return new NextResponse(null, { status: 404 });
