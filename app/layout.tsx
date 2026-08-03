@@ -9,13 +9,13 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://gregory-barmpas.vercel.app"),
   title: {
-    default: "Gregory Barmpas | Senior Data Scientist & AI Engineer",
+    default: "Gregory Barmpas | Data Scientist & AI Engineer",
     template: "%s | Gregory Barmpas"
   },
   description:
-    "Portfolio of Gregory Barmpas, Senior Data Scientist and AI Engineer specializing in Generative AI, RAG systems, LLM applications, forecasting, NLP, and production ML systems.",
+    "Portfolio of Gregory Barmpas, Data Scientist and AI Engineer specializing in Generative AI, RAG systems, LLM applications, forecasting, NLP, and production ML systems.",
   openGraph: {
-    title: "Gregory Barmpas | Senior Data Scientist & AI Engineer",
+    title: "Gregory Barmpas | Data Scientist & AI Engineer",
     description:
       "Production-ready ML, RAG, LLM application, forecasting, NLP, and AI engineering portfolio.",
     type: "website",
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Gregory Barmpas | Senior Data Scientist & AI Engineer",
+    title: "Gregory Barmpas | Data Scientist & AI Engineer",
     description:
       "Generative AI, RAG systems, LLM applications, forecasting, NLP, and production ML systems."
   }
