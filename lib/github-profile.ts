@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma";
+
 const fallbackAvatarUrl = "https://github.com/GregB712.png";
 
 type GitHubUser = {
@@ -27,4 +29,17 @@ export async function getGitHubAvatarUrl(username = "GregB712") {
   } catch {
     return fallbackAvatarUrl;
   }
+}
+
+export async function getLandingAvatarUrl() {
+  const uploadedAvatar = await prisma.landingAvatar.findUnique({
+    where: { id: "main" },
+    select: { updatedAt: true }
+  }).catch(() => null);
+
+  if (uploadedAvatar) {
+    return `/api/landing-avatar?updated=${uploadedAvatar.updatedAt.getTime()}`;
+  }
+
+  return getGitHubAvatarUrl();
 }

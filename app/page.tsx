@@ -8,14 +8,14 @@ import { SkillsSection } from "@/components/sections/SkillsSection";
 import { WhatIBuildSection } from "@/components/sections/WhatIBuildSection";
 import { getFeaturedProjects } from "@/lib/projects";
 import { trackPageView } from "@/lib/analytics";
-import { getGitHubAvatarUrl } from "@/lib/github-profile";
+import { getLandingAvatarUrl } from "@/lib/github-profile";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const [projects, avatarUrl] = await Promise.all([
     getFeaturedProjects(6),
-    getGitHubAvatarUrl(),
+    getLandingAvatarUrl(),
     trackPageView("/")
   ]);
 

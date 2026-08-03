@@ -27,6 +27,28 @@ function normalizeProjectData(formData: FormData) {
   };
 }
 
+async function getValidatedImageFile(formData: FormData, fieldName: string, label: string) {
+  const file = formData.get(fieldName);
+  if (!(file instanceof File) || file.size === 0) {
+    throw new Error(`Please choose an image file for the ${label}.`);
+  }
+
+  const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+  if (!allowedTypes.has(file.type)) {
+    throw new Error(`${label} must be a JPG, PNG, or WebP image.`);
+  }
+
+  const maxBytes = 4 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    throw new Error(`${label} must be smaller than 4MB.`);
+  }
+
+  return {
+    file,
+    bytes: new Uint8Array(await file.arrayBuffer())
+  };
+}
+
 export async function createProjectAction(formData: FormData) {
   await assertAdmin();
   const data = normalizeProjectData(formData);
@@ -155,22 +177,7 @@ export async function deleteContactAction(formData: FormData) {
 export async function uploadProfilePhotoAction(formData: FormData) {
   await assertAdmin();
 
-  const file = formData.get("photo");
-  if (!(file instanceof File) || file.size === 0) {
-    throw new Error("Please choose an image file.");
-  }
-
-  const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
-  if (!allowedTypes.has(file.type)) {
-    throw new Error("Profile photo must be a JPG, PNG, or WebP image.");
-  }
-
-  const maxBytes = 4 * 1024 * 1024;
-  if (file.size > maxBytes) {
-    throw new Error("Profile photo must be smaller than 4MB.");
-  }
-
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  const { file, bytes } = await getValidatedImageFile(formData, "photo", "CV profile photo");
 
   await prisma.profilePhoto.upsert({
     where: { id: "main" },
@@ -199,5 +206,40 @@ export async function deleteProfilePhotoAction() {
   });
 
   revalidatePath("/cv");
+  revalidatePath("/admin/settings");
+}
+
+export async function uploadLandingAvatarAction(formData: FormData) {
+  await assertAdmin();
+
+  const { file, bytes } = await getValidatedImageFile(formData, "avatar", "landing page avatar");
+
+  await prisma.landingAvatar.upsert({
+    where: { id: "main" },
+    create: {
+      id: "main",
+      imageBytes: bytes,
+      mimeType: file.type,
+      fileName: file.name || null
+    },
+    update: {
+      imageBytes: bytes,
+      mimeType: file.type,
+      fileName: file.name || null
+    }
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin/settings");
+}
+
+export async function deleteLandingAvatarAction() {
+  await assertAdmin();
+
+  await prisma.landingAvatar.deleteMany({
+    where: { id: "main" }
+  });
+
+  revalidatePath("/");
   revalidatePath("/admin/settings");
 }
