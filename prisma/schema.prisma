@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ProjectStatus {
+  featured
+  active
+  archived
+  hidden
+  in_progress
+}
+
+enum ContactStatus {
+  new
+  read
+  replied
+  archived
+  spam
+}
+
+model Project {
+  id                  String        @id @default(cuid())
+  slug                String        @unique
+  title               String
+  repoName            String        @unique
+  repoUrl             String
+  deploymentUrl       String?
+  description         String
+  longDescription     String?
+  problemSolved       String?
+  technicalHighlights String[]      @default([])
+  tags                String[]      @default([])
+  category            String[]      @default([])
+  imageUrl            String?
+  featured            Boolean       @default(false)
+  priority            Int           @default(100)
+  status              ProjectStatus @default(active)
+  stars               Int?
+  forks               Int?
+  primaryLanguage     String?
+  githubUpdatedAt     DateTime?
+  viewCount           Int           @default(0)
+  githubClickCount    Int           @default(0)
+  demoClickCount      Int           @default(0)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  @@index([featured])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
+  @@index([updatedAt])
+}
+
+model ContactSubmission {
+  id         String        @id @default(cuid())
+  name       String
+  email      String
+  company    String?
+  subject    String
+  message    String
+  sourcePage String?
+  ipHash     String?
+  userAgent  String?
+  status     ContactStatus @default(new)
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+model PageView {
+  id         String   @id @default(cuid())
+  path       String
+  referrer   String?
+  userAgent  String?
+  country    String?
+  deviceType String?
+  browser    String?
+  ipHash     String?
+  createdAt  DateTime @default(now())
+
+  @@index([path])
+  @@index([createdAt])
+  @@index([ipHash])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  eventName String
+  path      String
+  metadata  Json?
+  ipHash    String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([eventName])
+  @@index([path])
+  @@index([createdAt])
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
