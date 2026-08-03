@@ -49,6 +49,29 @@ async function getValidatedImageFile(formData: FormData, fieldName: string, labe
   };
 }
 
+async function getValidatedPdfFile(formData: FormData, fieldName: string, label: string) {
+  const file = formData.get(fieldName);
+  if (!(file instanceof File) || file.size === 0) {
+    throw new Error(`Please choose a PDF file for the ${label}.`);
+  }
+
+  const isPdf =
+    file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+  if (!isPdf) {
+    throw new Error(`${label} must be a PDF file.`);
+  }
+
+  const maxBytes = 9 * 1024 * 1024;
+  if (file.size > maxBytes) {
+    throw new Error(`${label} must be smaller than 9MB.`);
+  }
+
+  return {
+    file,
+    bytes: new Uint8Array(await file.arrayBuffer())
+  };
+}
+
 export async function createProjectAction(formData: FormData) {
   await assertAdmin();
   const data = normalizeProjectData(formData);
@@ -241,5 +264,40 @@ export async function deleteLandingAvatarAction() {
   });
 
   revalidatePath("/");
+  revalidatePath("/admin/settings");
+}
+
+export async function uploadCvDocumentAction(formData: FormData) {
+  await assertAdmin();
+
+  const { file, bytes } = await getValidatedPdfFile(formData, "cv", "CV document");
+
+  await prisma.cvDocument.upsert({
+    where: { id: "main" },
+    create: {
+      id: "main",
+      pdfBytes: bytes,
+      mimeType: "application/pdf",
+      fileName: file.name || "Gregory_Barmpas_CV.pdf"
+    },
+    update: {
+      pdfBytes: bytes,
+      mimeType: "application/pdf",
+      fileName: file.name || "Gregory_Barmpas_CV.pdf"
+    }
+  });
+
+  revalidatePath("/cv");
+  revalidatePath("/admin/settings");
+}
+
+export async function deleteCvDocumentAction() {
+  await assertAdmin();
+
+  await prisma.cvDocument.deleteMany({
+    where: { id: "main" }
+  });
+
+  revalidatePath("/cv");
   revalidatePath("/admin/settings");
 }

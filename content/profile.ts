@@ -11,7 +11,7 @@ export const profile = {
   summary:
     "Data Scientist / AI Engineer with 4+ years of experience developing machine learning, demand forecasting, predictive analytics, and Generative AI solutions. Experienced in statistical modeling, ensemble learning, time-series forecasting, NLP, LLM applications, RAG systems, and production AI systems. Strong background in Python, SQL, scikit-learn, PyTorch, FastAPI, cloud technologies, and end-to-end AI solution delivery.",
   status: "Open to AI/Data Science opportunities",
-  cvPath: "/Gregory_Barmpas_CV.pdf"
+  cvPath: "/api/cv?download=1"
 } as const;
 
 export const recruiterHighlights = [

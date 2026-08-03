@@ -126,6 +126,15 @@ model LandingAvatar {
   updatedAt  DateTime @updatedAt
 }
 
+model CvDocument {
+  id        String   @id @default("main")
+  pdfBytes  Bytes
+  mimeType  String   @default("application/pdf")
+  fileName  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?

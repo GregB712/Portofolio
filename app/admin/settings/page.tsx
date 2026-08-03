@@ -2,8 +2,10 @@ import { AdminHeader } from "@/components/layout/AdminHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
+  deleteCvDocumentAction,
   deleteLandingAvatarAction,
   deleteProfilePhotoAction,
+  uploadCvDocumentAction,
   uploadLandingAvatarAction,
   uploadProfilePhotoAction
 } from "@/lib/admin-actions";
@@ -66,15 +68,109 @@ async function getLandingAvatarPreview() {
   }
 }
 
+async function getCvDocumentPreview() {
+  try {
+    return {
+      document: await prisma.cvDocument.findUnique({
+        where: { id: "main" },
+        select: {
+          fileName: true,
+          mimeType: true,
+          updatedAt: true
+        }
+      }),
+      error: null
+    };
+  } catch {
+    return {
+      document: null,
+      error:
+        "The CV document table is not available yet. Run `npx prisma migrate deploy` against the production Neon database, then redeploy or reload."
+    };
+  }
+}
+
 export default async function AdminSettingsPage() {
   const [
     { photo: profilePhoto, error: profilePhotoError },
-    { avatar: landingAvatar, error: landingAvatarError }
-  ] = await Promise.all([getProfilePhotoPreview(), getLandingAvatarPreview()]);
+    { avatar: landingAvatar, error: landingAvatarError },
+    { document: cvDocument, error: cvDocumentError }
+  ] = await Promise.all([getProfilePhotoPreview(), getLandingAvatarPreview(), getCvDocumentPreview()]);
 
   return (
     <>
       <AdminHeader title="Settings" subtitle="Deployment readiness checklist for Vercel, Neon, Auth.js, Resend, and GitHub sync." />
+      <section className="glass mb-5 rounded-lg p-5">
+        <h2 className="text-xl font-semibold">CV PDF</h2>
+        <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
+          Upload the PDF used by every CV download button. If no database PDF exists, downloads fall back to the static file in public.
+        </p>
+        {cvDocumentError ? (
+          <div className="mt-4 rounded-md border border-[var(--accent-3)] bg-white/5 p-3 text-sm leading-6 text-[var(--accent-3)]">
+            {cvDocumentError}
+          </div>
+        ) : null}
+        <div className="mt-5 grid gap-5 lg:grid-cols-[180px_1fr]">
+          <div className="grid aspect-[3/4] place-items-center rounded-lg border border-[var(--line)] bg-white/5 px-4 text-center">
+            <div>
+              <p className="text-4xl font-semibold text-[var(--accent)]">PDF</p>
+              <p className="mt-2 text-sm text-[var(--muted)]">
+                {cvDocument ? "Database CV" : "Static fallback"}
+              </p>
+            </div>
+          </div>
+          <div>
+            <div className="mb-4 rounded-md border border-[var(--line)] bg-white/5 p-3 text-sm text-[var(--muted)]">
+              {cvDocument ? (
+                <>
+                  <p>
+                    Current file: <span className="text-[var(--foreground)]">{cvDocument.fileName ?? "uploaded CV"}</span>
+                  </p>
+                  <p>Type: {cvDocument.mimeType}</p>
+                  <p>Updated: {cvDocument.updatedAt.toLocaleString("en")}</p>
+                </>
+              ) : (
+                <p>Current file: static fallback at <span className="text-[var(--foreground)]">/Gregory_Barmpas_CV.pdf</span></p>
+              )}
+            </div>
+            <div className="mb-4 flex flex-wrap gap-3">
+              <a
+                href="/api/cv"
+                target="_blank"
+                rel="noreferrer"
+                className="focus-ring inline-flex min-h-10 items-center rounded-md border border-[var(--line)] px-4 py-2 text-sm font-semibold transition hover:bg-white/10"
+              >
+                Open current CV
+              </a>
+              <a
+                href="/api/cv?download=1"
+                className="focus-ring inline-flex min-h-10 items-center rounded-md border border-[var(--line)] px-4 py-2 text-sm font-semibold transition hover:bg-white/10"
+              >
+                Download current CV
+              </a>
+            </div>
+            <form action={uploadCvDocumentAction} className="grid gap-3">
+              <input
+                required
+                type="file"
+                name="cv"
+                accept="application/pdf,.pdf"
+                className="focus-ring rounded-md border border-[var(--line)] bg-white/5 px-3 py-3 text-sm"
+              />
+              <Button type="submit" variant="primary" className="w-fit">
+                Replace CV PDF
+              </Button>
+            </form>
+            {cvDocument ? (
+              <form action={deleteCvDocumentAction} className="mt-3">
+                <Button type="submit" variant="danger">
+                  Delete database CV
+                </Button>
+              </form>
+            ) : null}
+          </div>
+        </div>
+      </section>
       <section className="glass mb-5 rounded-lg p-5">
         <h2 className="text-xl font-semibold">Landing page avatar</h2>
         <p className="mt-2 text-sm leading-6 text-[var(--muted)]">
