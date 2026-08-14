@@ -15,6 +15,7 @@ function isAllowedAdmin(email?: string | null, githubLogin?: string | null) {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  trustHost: true,
   session: { strategy: "database" },
   providers: [
     GitHub({

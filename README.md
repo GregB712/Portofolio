@@ -41,6 +41,7 @@ Configure:
 ```env
 DATABASE_URL=
 AUTH_SECRET=
+AUTH_TRUST_HOST=true
 GITHUB_ID=
 GITHUB_SECRET=
 ADMIN_EMAIL=
@@ -82,7 +83,7 @@ For production, add:
 https://your-domain.com/api/auth/callback/github
 ```
 
-Set `GITHUB_ID`, `GITHUB_SECRET`, `AUTH_SECRET`, and `ADMIN_EMAIL`. Only the configured admin email or `ADMIN_GITHUB_LOGIN` can sign in.
+Set `GITHUB_ID`, `GITHUB_SECRET`, `AUTH_SECRET`, `AUTH_TRUST_HOST=true`, and `ADMIN_EMAIL`. Only the configured admin email or `ADMIN_GITHUB_LOGIN` can sign in. If you set `AUTH_URL`, give it the full deployed origin, for example `https://your-domain.com`; do not leave it as an empty variable.
 
 ## Projects
 
