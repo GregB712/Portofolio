@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Download } from "lucide-react";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { TrackedLink } from "@/components/ui/TrackedLink";
 import { education } from "@/content/education";
 import { experience } from "@/content/experience";
 import { profile } from "@/content/profile";
+import { pageDescriptions } from "@/content/site";
 import { skillGroups } from "@/content/skills";
 import { trackPageView } from "@/lib/analytics";
 import { prisma } from "@/lib/prisma";
@@ -13,7 +15,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "CV",
-  description: "Print-friendly web CV for Gregory Barmpas, Data Scientist and AI Engineer."
+  description: pageDescriptions.cv
 };
 
 async function getProfilePhoto() {
@@ -39,6 +41,7 @@ export default async function CvPage() {
   return (
     <main className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
+        <Breadcrumbs items={[{ label: "CV", href: "/cv" }]} className="no-print mb-6" />
         <div className="no-print mb-6 flex justify-end">
           <TrackedLink
             href={profile.cvPath}

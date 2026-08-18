@@ -1,12 +1,14 @@
 "use client";
 
 import { Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-type State = "idle" | "submitting" | "success" | "error";
+type State = "idle" | "submitting" | "error";
 
 export function ContactForm({ sourcePage = "/contact" }: { sourcePage?: string }) {
+  const router = useRouter();
   const [state, setState] = useState<State>("idle");
   const [error, setError] = useState("");
 
@@ -28,18 +30,7 @@ export function ContactForm({ sourcePage = "/contact" }: { sourcePage?: string }
       return;
     }
 
-    setState("success");
-  }
-
-  if (state === "success") {
-    return (
-      <div className="glass rounded-lg p-6">
-        <h2 className="text-xl font-semibold">Message stored and forwarded.</h2>
-        <p className="mt-3 text-[var(--muted)]">
-          Thanks for reaching out. Gregory will receive the message by email and can review it in the admin dashboard.
-        </p>
-      </div>
-    );
+    router.push("/thank-you");
   }
 
   return (

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { EducationSection } from "@/components/sections/EducationSection";
@@ -6,11 +7,17 @@ import { FeaturedProjects } from "@/components/sections/FeaturedProjects";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { SkillsSection } from "@/components/sections/SkillsSection";
 import { WhatIBuildSection } from "@/components/sections/WhatIBuildSection";
+import { pageDescriptions } from "@/content/site";
 import { getFeaturedProjects } from "@/lib/projects";
 import { trackPageView } from "@/lib/analytics";
 import { getLandingAvatarUrl } from "@/lib/github-profile";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  title: "Data Scientist & AI Engineer",
+  description: pageDescriptions.home
+};
 
 export default async function HomePage() {
   const [projects, avatarUrl] = await Promise.all([

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { TrackedLink } from "@/components/ui/TrackedLink";
@@ -59,6 +60,10 @@ export default async function ProjectDetailPage({
   return (
     <main className="px-4 py-14 sm:px-6 lg:px-8">
       <article className="mx-auto max-w-5xl">
+        <Breadcrumbs
+          items={[{ label: "Projects", href: "/projects" }, { label: project.title, href: `/projects/${project.slug}` }]}
+          className="mb-8"
+        />
         <Link
           href="/projects"
           className="focus-ring mb-8 inline-flex items-center gap-2 rounded-md text-sm text-[var(--muted)] hover:text-[var(--foreground)]"

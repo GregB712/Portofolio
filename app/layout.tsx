@@ -4,28 +4,26 @@ import { ThemeProvider } from "next-themes";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { profile } from "@/content/profile";
+import { pageDescriptions, site } from "@/content/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gregory-barmpas.vercel.app"),
+  metadataBase: new URL(site.url),
   title: {
     default: "Gregory Barmpas | Data Scientist & AI Engineer",
     template: "%s | Gregory Barmpas"
   },
-  description:
-    "Portfolio of Gregory Barmpas, Data Scientist and AI Engineer specializing in Generative AI, RAG systems, LLM applications, forecasting, NLP, and production ML systems.",
+  description: pageDescriptions.home,
   openGraph: {
     title: "Gregory Barmpas | Data Scientist & AI Engineer",
-    description:
-      "Production-ready ML, RAG, LLM application, forecasting, NLP, and AI engineering portfolio.",
+    description: pageDescriptions.home,
     type: "website",
-    url: "https://gregory-barmpas.vercel.app"
+    url: site.url
   },
   twitter: {
     card: "summary_large_image",
     title: "Gregory Barmpas | Data Scientist & AI Engineer",
-    description:
-      "Generative AI, RAG systems, LLM applications, forecasting, NLP, and production ML systems."
+    description: pageDescriptions.home
   }
 };
 
@@ -38,7 +36,7 @@ const jsonLd = {
       jobTitle: "Data Scientist and AI Engineer",
       email: profile.email,
       address: profile.location,
-      url: "https://gregory-barmpas.vercel.app",
+      url: site.url,
       sameAs: ["https://github.com/GregB712", "https://www.linkedin.com/in/gbarmpas/"],
       knowsAbout: [
         "Generative AI",
@@ -52,7 +50,7 @@ const jsonLd = {
     {
       "@type": "WebSite",
       name: "Gregory Barmpas Portfolio",
-      url: "https://gregory-barmpas.vercel.app"
+      url: site.url
     }
   ]
 };

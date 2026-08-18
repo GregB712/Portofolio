@@ -1,7 +1,8 @@
-import { Mail } from "lucide-react";
+import { Clock, Mail } from "lucide-react";
 import { CopyEmailButton } from "@/components/ui/CopyEmailButton";
 import { TrackedLink } from "@/components/ui/TrackedLink";
 import { profile } from "@/content/profile";
+import { site } from "@/content/site";
 
 export function ContactSection() {
   return (
@@ -15,6 +16,10 @@ export function ContactSection() {
             <h2 className="mt-3 text-3xl font-semibold">Need AI systems shipped cleanly?</h2>
             <p className="mt-4 max-w-2xl leading-7 text-black/70 dark:text-white/70">
               Reach out for Data Science, AI Engineering, LLM application, retrieval, or forecasting roles.
+            </p>
+            <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-black/70 dark:text-white/70">
+              <Clock aria-hidden size={16} />
+              {site.responseTimePromise}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

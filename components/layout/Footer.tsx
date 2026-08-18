@@ -18,6 +18,12 @@ export function Footer() {
           <Link href="/cv" className="focus-ring rounded-sm hover:text-[var(--foreground)]">
             CV
           </Link>
+          <Link href="/contact" className="focus-ring rounded-sm hover:text-[var(--foreground)]">
+            Contact
+          </Link>
+          <Link href="/privacy" className="focus-ring rounded-sm hover:text-[var(--foreground)]">
+            Privacy
+          </Link>
           {socials.slice(0, 2).map((social) => (
             <TrackedLink
               key={social.href}

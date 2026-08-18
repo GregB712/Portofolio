@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Search } from "lucide-react";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { Badge } from "@/components/ui/badge";
+import { pageDescriptions } from "@/content/site";
 import { getProjectFacets, getVisibleProjects } from "@/lib/projects";
 import { trackPageView } from "@/lib/analytics";
 
@@ -9,8 +11,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description:
-    "Database-backed AI, data science, retrieval, NLP, forecasting, and full-stack project showcase for Gregory Barmpas."
+  description: pageDescriptions.projects
 };
 
 function single(value: string | string[] | undefined) {
@@ -37,6 +38,7 @@ export default async function ProjectsPage({
   return (
     <main className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
+        <Breadcrumbs items={[{ label: "Projects", href: "/projects" }]} className="mb-8" />
         <div className="mb-8">
           <Badge>Projects</Badge>
           <h1 className="mt-4 text-4xl font-semibold sm:text-5xl">Project showcase</h1>
