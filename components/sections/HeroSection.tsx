@@ -15,6 +15,8 @@ const nodes = [
   ["44%", "84%"]
 ];
 
+const githubSocial = socials.find((social) => social.label === "GitHub") ?? socials[0];
+
 export function HeroSection({ avatarUrl }: { avatarUrl: string }) {
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
@@ -90,16 +92,32 @@ export function HeroSection({ avatarUrl }: { avatarUrl: string }) {
           <div className="absolute -right-4 -top-4 rounded-md border border-[var(--accent)] bg-[var(--background)] px-3 py-2 text-xs text-[var(--accent)]">
             AI systems portfolio
           </div>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-md border border-[var(--line)] bg-black">
+          <TrackedLink
+            href={githubSocial.href}
+            target="_blank"
+            eventName={githubSocial.eventName}
+            aria-label="Open Gregory Barmpas on GitHub"
+            className="group relative block aspect-[4/5] overflow-hidden rounded-md border border-[var(--line)] bg-black transition duration-300 hover:border-[var(--accent)] hover:shadow-[0_0_0_1px_var(--accent),0_22px_60px_rgba(33,215,166,0.22)]"
+          >
             <Image
               src={avatarUrl}
               alt="Gregory Barmpas GitHub avatar"
               fill
               priority
               sizes="(min-width: 1024px) 36vw, 90vw"
-              className="object-cover opacity-90"
+              className="object-cover opacity-90 transition duration-300 group-hover:scale-[1.02] group-hover:opacity-100"
             />
-          </div>
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-[var(--accent)]/0 mix-blend-screen transition duration-300 group-hover:bg-[var(--accent)]/20"
+            />
+            <span
+              aria-hidden
+              className="pointer-events-none absolute bottom-4 right-4 grid size-11 translate-y-2 place-items-center rounded-full border border-[var(--accent)] bg-black/75 text-[var(--accent)] opacity-0 shadow-[0_0_28px_rgba(33,215,166,0.35)] backdrop-blur transition duration-300 group-hover:translate-y-0 group-hover:opacity-100"
+            >
+              <Github size={20} />
+            </span>
+          </TrackedLink>
           <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
             {["RAG", "Forecasting", "LLM Apps"].map((item) => (
               <div key={item} className="rounded-md border border-[var(--line)] bg-white/5 px-2 py-3">

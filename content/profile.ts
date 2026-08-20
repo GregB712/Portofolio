@@ -2,7 +2,7 @@ export const profile = {
   name: "Gregory Barmpas",
   role:
     "Data Scientist | AI Engineer | Generative AI | LLM Applications | Time Series Forecasting",
-  location: "Thessaloniki, Greece",
+  location: "Based in Germany | Open to relocation",
   email: "gregorybarbas@gmail.com",
   headline:
     "Data Scientist & AI Engineer building production-ready ML, RAG, and Generative AI systems.",
