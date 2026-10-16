@@ -4,7 +4,7 @@ import { Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-export function CopyEmailButton({ email }: { email: string }) {
+export function CopyEmailButton({ email, className }: { email: string; className?: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copyEmail() {
@@ -24,9 +24,14 @@ export function CopyEmailButton({ email }: { email: string }) {
   }
 
   return (
-    <Button type="button" onClick={copyEmail} variant="secondary">
+    <Button type="button" onClick={copyEmail} variant="secondary" className={className}>
       {copied ? <Check size={16} /> : <Copy size={16} />}
-      {copied ? "Copied" : "Copy email"}
+      <span className="grid">
+        <span className="invisible col-start-1 row-start-1" aria-hidden>
+          Copy email
+        </span>
+        <span className="col-start-1 row-start-1 text-left">{copied ? "Copied" : "Copy email"}</span>
+      </span>
     </Button>
   );
 }

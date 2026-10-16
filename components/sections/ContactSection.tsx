@@ -30,7 +30,10 @@ export function ContactSection() {
             >
               <Mail size={16} /> Contact Gregory
             </TrackedLink>
-            <CopyEmailButton email={profile.email} />
+            <CopyEmailButton
+              email={profile.email}
+              className="text-[var(--background)] border-[var(--background)]/30 hover:bg-[var(--background)]/10"
+            />
           </div>
         </div>
       </div>
