@@ -114,6 +114,12 @@ npm run github:sync -- --repo=Loomi-Brain
 
 The sync updates stars, forks, primary language, GitHub update date, and missing repo URLs. It does not overwrite long descriptions, problem statements, categories, tags, deployment URLs, priority, featured flags, or status.
 
+## Editable landing content
+
+The hero (status, name, location, title, subtitle), About section (heading, summary, highlight chips), Experience, and Education content are database-backed and editable from `/admin/content`. Until a section has saved rows, the public site falls back to the built-in defaults in `content/`.
+
+After running migrations, open `/admin/content` and use **Import current content** to seed the database from those defaults, then edit. Experience and Education support add, edit, delete, and ordering. The same content also drives the `/cv` page.
+
 ## Contact + Resend
 
 Set `RESEND_API_KEY`, `CONTACT_TO_EMAIL`, and a verified `RESEND_FROM_EMAIL` for production. Contact submissions are stored in Postgres and forwarded by email. The admin dashboard can mark messages as read, replied, archived, spam, or delete them.

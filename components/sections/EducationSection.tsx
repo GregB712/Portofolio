@@ -1,15 +1,15 @@
 import { GraduationCap } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { education } from "@/content/education";
+import type { EducationView } from "@/lib/site-content";
 
-export function EducationSection() {
+export function EducationSection({ items }: { items: EducationView[] }) {
   return (
     <section className="px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading eyebrow="Education" title="Computer science depth with data and web science focus." />
         <div className="grid gap-5 md:grid-cols-3">
-          {education.map((item) => (
-            <article key={item.degree} className="glass rounded-lg p-5">
+          {items.map((item) => (
+            <article key={item.id} className="glass rounded-lg p-5">
               <GraduationCap className="mb-5 text-[var(--accent-3)]" size={26} />
               <h3 className="text-lg font-semibold">{item.degree}</h3>
               <p className="mt-3 text-sm leading-6 text-[var(--muted)]">{item.school}</p>

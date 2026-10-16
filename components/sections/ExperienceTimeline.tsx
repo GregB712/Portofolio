@@ -1,8 +1,8 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TimelineItem } from "@/components/ui/TimelineItem";
-import { experience } from "@/content/experience";
+import type { ExperienceView } from "@/lib/site-content";
 
-export function ExperienceTimeline() {
+export function ExperienceTimeline({ items }: { items: ExperienceView[] }) {
   return (
     <section className="px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
@@ -11,9 +11,9 @@ export function ExperienceTimeline() {
           title="Machine learning, forecasting, and GenAI delivery across production teams."
         />
         <div className="space-y-6">
-          {experience.map((item) => (
+          {items.map((item) => (
             <TimelineItem
-              key={`${item.company}-${item.role}`}
+              key={item.id}
               title={item.role}
               subtitle={item.company}
               dates={item.dates}

@@ -4,8 +4,19 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { formDataToObject, projectSchema } from "@/lib/validations";
+import {
+  educationEntrySchema,
+  experienceEntrySchema,
+  formDataToObject,
+  projectSchema,
+  siteContentSchema
+} from "@/lib/validations";
 import { fetchGitHubRepo } from "@/lib/github";
+import {
+  educationDefaultsView,
+  experienceDefaultsView,
+  siteContentDefaults
+} from "@/lib/site-content";
 
 async function assertAdmin() {
   const session = await requireAdmin();
@@ -300,4 +311,100 @@ export async function deleteCvDocumentAction() {
 
   revalidatePath("/cv");
   revalidatePath("/admin/settings");
+}
+
+function revalidateContent() {
+  revalidatePath("/");
+  revalidatePath("/cv");
+  revalidatePath("/admin/content");
+}
+
+export async function updateSiteContentAction(formData: FormData) {
+  await assertAdmin();
+  const data = siteContentSchema.parse(formDataToObject(formData));
+
+  await prisma.siteContent.upsert({
+    where: { id: "main" },
+    create: { id: "main", ...data },
+    update: data
+  });
+
+  revalidateContent();
+}
+
+export async function createExperienceAction(formData: FormData) {
+  await assertAdmin();
+  const data = experienceEntrySchema.parse(formDataToObject(formData));
+  await prisma.experienceEntry.create({ data });
+  revalidateContent();
+}
+
+export async function updateExperienceAction(formData: FormData) {
+  await assertAdmin();
+  const id = String(formData.get("id"));
+  const data = experienceEntrySchema.parse(formDataToObject(formData));
+  await prisma.experienceEntry.update({ where: { id }, data });
+  revalidateContent();
+}
+
+export async function deleteExperienceAction(formData: FormData) {
+  await assertAdmin();
+  await prisma.experienceEntry.delete({ where: { id: String(formData.get("id")) } });
+  revalidateContent();
+}
+
+export async function createEducationAction(formData: FormData) {
+  await assertAdmin();
+  const data = educationEntrySchema.parse(formDataToObject(formData));
+  await prisma.educationEntry.create({ data });
+  revalidateContent();
+}
+
+export async function updateEducationAction(formData: FormData) {
+  await assertAdmin();
+  const id = String(formData.get("id"));
+  const data = educationEntrySchema.parse(formDataToObject(formData));
+  await prisma.educationEntry.update({ where: { id }, data });
+  revalidateContent();
+}
+
+export async function deleteEducationAction(formData: FormData) {
+  await assertAdmin();
+  await prisma.educationEntry.delete({ where: { id: String(formData.get("id")) } });
+  revalidateContent();
+}
+
+export async function seedContentDefaultsAction() {
+  await assertAdmin();
+
+  const existingContent = await prisma.siteContent.findUnique({ where: { id: "main" } });
+  if (!existingContent) {
+    await prisma.siteContent.create({ data: { id: "main", ...siteContentDefaults } });
+  }
+
+  if ((await prisma.experienceEntry.count()) === 0) {
+    await prisma.experienceEntry.createMany({
+      data: experienceDefaultsView.map((item, index) => ({
+        role: item.role,
+        company: item.company,
+        dates: item.dates,
+        current: item.current,
+        bullets: item.bullets,
+        sortOrder: (index + 1) * 10
+      }))
+    });
+  }
+
+  if ((await prisma.educationEntry.count()) === 0) {
+    await prisma.educationEntry.createMany({
+      data: educationDefaultsView.map((item, index) => ({
+        degree: item.degree,
+        school: item.school,
+        dates: item.dates,
+        sortOrder: (index + 1) * 10
+      }))
+    });
+  }
+
+  revalidateContent();
 }

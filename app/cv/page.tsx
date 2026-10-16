@@ -3,13 +3,12 @@ import { Download } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/badge";
 import { TrackedLink } from "@/components/ui/TrackedLink";
-import { education } from "@/content/education";
-import { experience } from "@/content/experience";
 import { profile } from "@/content/profile";
 import { pageDescriptions } from "@/content/site";
 import { skillGroups } from "@/content/skills";
 import { trackPageView } from "@/lib/analytics";
 import { prisma } from "@/lib/prisma";
+import { getEducationEntries, getExperienceEntries, getSiteContent } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
@@ -33,8 +32,11 @@ async function getProfilePhoto() {
 }
 
 export default async function CvPage() {
-  const [profilePhoto] = await Promise.all([
+  const [profilePhoto, content, experience, education] = await Promise.all([
     getProfilePhoto(),
+    getSiteContent(),
+    getExperienceEntries(),
+    getEducationEntries(),
     trackPageView("/cv")
   ]);
 
@@ -56,10 +58,10 @@ export default async function CvPage() {
           <header className="border-b border-[var(--line)] pb-6">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <Badge>{profile.location}</Badge>
-                <h1 className="mt-4 text-4xl font-semibold">{profile.name}</h1>
+                <Badge>{content.heroLocation}</Badge>
+                <h1 className="mt-4 text-4xl font-semibold">{content.heroName}</h1>
                 <p className="mt-2 text-lg text-[var(--muted)]">{profile.role}</p>
-                <p className="mt-4 max-w-3xl leading-7">{profile.summary}</p>
+                <p className="mt-4 max-w-3xl leading-7">{content.aboutSummary}</p>
                 <p className="mt-4 text-sm text-[var(--muted)]">
                   {profile.email} | github.com/GregB712 | linkedin.com/in/gbarmpas
                 </p>
@@ -81,7 +83,7 @@ export default async function CvPage() {
             <h2 className="text-2xl font-semibold">Experience</h2>
             <div className="mt-5 space-y-6">
               {experience.map((item) => (
-                <div key={`${item.company}-${item.role}`}>
+                <div key={item.id}>
                   <div className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                     <h3 className="font-semibold">
                       {item.role}, {item.company}
@@ -116,7 +118,7 @@ export default async function CvPage() {
             <h2 className="text-2xl font-semibold">Education</h2>
             <div className="mt-4 space-y-4">
               {education.map((item) => (
-                <div key={item.degree} className="flex flex-col gap-1 sm:flex-row sm:justify-between">
+                <div key={item.id} className="flex flex-col gap-1 sm:flex-row sm:justify-between">
                   <div>
                     <h3 className="font-semibold">{item.degree}</h3>
                     <p className="text-sm text-[var(--muted)]">{item.school}</p>

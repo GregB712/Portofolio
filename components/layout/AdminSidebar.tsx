@@ -1,9 +1,10 @@
-import { BarChart3, FolderKanban, Inbox, LayoutDashboard, Settings } from "lucide-react";
+import { BarChart3, FileText, FolderKanban, Inbox, LayoutDashboard, Settings } from "lucide-react";
 import Link from "next/link";
 
 const links = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { href: "/admin/content", label: "Content", icon: FileText },
   { href: "/admin/contact", label: "Contact", icon: Inbox },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/settings", label: "Settings", icon: Settings }

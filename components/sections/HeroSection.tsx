@@ -5,6 +5,7 @@ import { CopyEmailButton } from "@/components/ui/CopyEmailButton";
 import { TrackedLink } from "@/components/ui/TrackedLink";
 import { profile } from "@/content/profile";
 import { socials } from "@/content/socials";
+import type { SiteContentView } from "@/lib/site-content";
 
 const nodes = [
   ["12%", "24%"],
@@ -17,7 +18,13 @@ const nodes = [
 
 const githubSocial = socials.find((social) => social.label === "GitHub") ?? socials[0];
 
-export function HeroSection({ avatarUrl }: { avatarUrl: string }) {
+export function HeroSection({
+  avatarUrl,
+  content
+}: {
+  avatarUrl: string;
+  content: SiteContentView;
+}) {
   return (
     <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
       <div className="ai-field" aria-hidden>
@@ -29,20 +36,20 @@ export function HeroSection({ avatarUrl }: { avatarUrl: string }) {
         <div>
           <div className="mb-6 flex flex-wrap items-center gap-3">
             <Badge className="border-[var(--accent)] bg-[var(--accent)]/10">
-              {profile.status}
+              {content.heroStatus}
             </Badge>
             <span className="inline-flex items-center gap-2 text-sm text-[var(--muted)]">
-              <MapPin size={16} /> {profile.location}
+              <MapPin size={16} /> {content.heroLocation}
             </span>
           </div>
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--accent-2)]">
-            {profile.name}
+            {content.heroName}
           </p>
           <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.02] tracking-normal sm:text-6xl lg:text-7xl">
-            {profile.headline}
+            {content.heroTitle}
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--muted)]">
-            {profile.subheadline}
+            {content.heroSubtitle}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <TrackedLink

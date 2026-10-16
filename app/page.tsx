@@ -11,6 +11,7 @@ import { pageDescriptions } from "@/content/site";
 import { getFeaturedProjects } from "@/lib/projects";
 import { trackPageView } from "@/lib/analytics";
 import { getLandingAvatarUrl } from "@/lib/github-profile";
+import { getEducationEntries, getExperienceEntries, getSiteContent } from "@/lib/site-content";
 
 export const dynamic = "force-dynamic";
 
@@ -20,21 +21,24 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const [projects, avatarUrl] = await Promise.all([
+  const [projects, avatarUrl, content, experience, education] = await Promise.all([
     getFeaturedProjects(6),
     getLandingAvatarUrl(),
+    getSiteContent(),
+    getExperienceEntries(),
+    getEducationEntries(),
     trackPageView("/")
   ]);
 
   return (
     <main>
-      <HeroSection avatarUrl={avatarUrl} />
-      <AboutSection />
+      <HeroSection avatarUrl={avatarUrl} content={content} />
+      <AboutSection content={content} />
       <FeaturedProjects projects={projects} />
       <WhatIBuildSection />
       <SkillsSection />
-      <ExperienceTimeline />
-      <EducationSection />
+      <ExperienceTimeline items={experience} />
+      <EducationSection items={education} />
       <ContactSection />
     </main>
   );
