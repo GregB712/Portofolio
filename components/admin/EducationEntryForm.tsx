@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react";
 import type { EducationEntry } from "@prisma/client";
+import { SubmitButton } from "@/components/admin/SubmitButton";
 import { Button } from "@/components/ui/button";
 
 type EducationEntryFormProps = {
@@ -27,9 +28,9 @@ export function EducationEntryForm({ action, deleteAction, entry, mode }: Educat
           />
         </div>
         <div className="flex justify-end">
-          <Button type="submit" variant="primary">
+          <SubmitButton variant="primary">
             {mode === "create" ? "Add education" : "Save education"}
-          </Button>
+          </SubmitButton>
         </div>
       </form>
       {mode === "edit" && entry && deleteAction ? (

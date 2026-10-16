@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/admin/SubmitButton";
 import type { SiteContentView } from "@/lib/site-content";
 
 type SiteContentFormProps = {
@@ -36,9 +36,7 @@ export function SiteContentForm({ action, content }: SiteContentFormProps) {
       />
 
       <div className="flex justify-end">
-        <Button type="submit" variant="primary">
-          Save content
-        </Button>
+        <SubmitButton variant="primary">Save content</SubmitButton>
       </div>
     </form>
   );
