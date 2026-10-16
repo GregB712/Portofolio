@@ -1,5 +1,6 @@
 import { Trash2 } from "lucide-react";
 import type { ExperienceEntry } from "@prisma/client";
+import { SubmitButton } from "@/components/admin/SubmitButton";
 import { Button } from "@/components/ui/button";
 
 type ExperienceEntryFormProps = {
@@ -38,9 +39,9 @@ export function ExperienceEntryForm({ action, deleteAction, entry, mode }: Exper
           Current role
         </label>
         <div className="flex justify-end">
-          <Button type="submit" variant="primary">
+          <SubmitButton variant="primary">
             {mode === "create" ? "Add role" : "Save role"}
-          </Button>
+          </SubmitButton>
         </div>
       </form>
       {mode === "edit" && entry && deleteAction ? (
