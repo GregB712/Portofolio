@@ -11,7 +11,7 @@ import {
   projectSchema,
   siteContentSchema
 } from "@/lib/validations";
-import { fetchGitHubRepo } from "@/lib/github";
+import { fetchGitHubRepo, listGitHubRepos, type GithubRepoPrefill } from "@/lib/github";
 import {
   educationDefaultsView,
   experienceDefaultsView,
@@ -182,6 +182,40 @@ export async function syncProjectGithubAction(formData: FormData) {
   revalidatePath("/admin/projects");
   revalidatePath("/");
   revalidatePath("/projects");
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function humanizeRepoName(value: string) {
+  return value
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+export async function listGithubReposAction(): Promise<GithubRepoPrefill[]> {
+  await assertAdmin();
+  const repos = await listGitHubRepos("GregB712");
+
+  return repos.map((repo) => ({
+    repoName: repo.name,
+    repoUrl: repo.html_url,
+    title: humanizeRepoName(repo.name),
+    slug: slugify(repo.name),
+    description: repo.description ?? "",
+    deploymentUrl: repo.homepage ?? "",
+    primaryLanguage: repo.language ?? "",
+    stars: repo.stargazers_count,
+    forks: repo.forks_count,
+    tags: repo.topics ?? [],
+    pushedAt: repo.pushed_at
+  }));
 }
 
 export async function setContactStatusAction(formData: FormData) {
