@@ -10,14 +10,14 @@ export function ContactSection() {
       <div className="mx-auto max-w-5xl rounded-lg border border-[var(--line)] bg-[var(--foreground)] p-8 text-[var(--background)] shadow-2xl sm:p-10">
         <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-black/60 dark:text-white/60">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--background)]/60">
               Contact
             </p>
             <h2 className="mt-3 text-3xl font-semibold">Need AI systems shipped cleanly?</h2>
-            <p className="mt-4 max-w-2xl leading-7 text-black/70 dark:text-white/70">
+            <p className="mt-4 max-w-2xl leading-7 text-[var(--background)]/70">
               Reach out for Data Science, AI Engineering, LLM application, retrieval, or forecasting roles.
             </p>
-            <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-black/70 dark:text-white/70">
+            <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[var(--background)]/70">
               <Clock aria-hidden size={16} />
               {site.responseTimePromise}
             </p>
