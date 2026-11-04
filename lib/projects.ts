@@ -3,12 +3,42 @@ import { prisma } from "@/lib/prisma";
 
 export type PublicProject = Project;
 
-export async function getFeaturedProjects(limit = 6) {
+export const FEATURED_COUNT = 6;
+
+// Guest-facing order: lower priority number first, ties broken by creation date.
+export const PROJECT_ORDER: Prisma.ProjectOrderByWithRelationInput[] = [
+  { priority: "asc" },
+  { createdAt: "asc" }
+];
+
+export async function getFeaturedProjects() {
   return prisma.project.findMany({
-    where: { status: { not: "hidden" }, featured: true },
-    orderBy: [{ priority: "asc" }, { updatedAt: "desc" }],
-    take: limit
+    where: { status: { not: "hidden" } },
+    orderBy: PROJECT_ORDER,
+    take: FEATURED_COUNT
   });
+}
+
+// Keep the `featured` flag equal to "in the first FEATURED_COUNT visible projects".
+export async function syncFeaturedFlags() {
+  const top = await prisma.project.findMany({
+    where: { status: { not: "hidden" } },
+    orderBy: PROJECT_ORDER,
+    take: FEATURED_COUNT,
+    select: { id: true }
+  });
+  const ids = top.map((project) => project.id);
+
+  await prisma.$transaction([
+    prisma.project.updateMany({
+      where: { id: { notIn: ids }, featured: true },
+      data: { featured: false }
+    }),
+    prisma.project.updateMany({
+      where: { id: { in: ids }, featured: false },
+      data: { featured: true }
+    })
+  ]);
 }
 
 export async function getVisibleProjects(params?: {
@@ -45,9 +75,7 @@ export async function getVisibleProjects(params?: {
         ? [{ viewCount: "desc" }]
         : sort === "github"
           ? [{ githubClickCount: "desc" }]
-          : sort === "priority"
-            ? [{ priority: "asc" }]
-            : [{ featured: "desc" }, { priority: "asc" }, { updatedAt: "desc" }];
+          : PROJECT_ORDER;
 
   return prisma.project.findMany({ where, orderBy });
 }

@@ -42,6 +42,7 @@ model Project {
   status              ProjectStatus @default(active)
   stars               Int?
   forks               Int?
+  watchers            Int?
   primaryLanguage     String?
   githubUpdatedAt     DateTime?
   viewCount           Int           @default(0)

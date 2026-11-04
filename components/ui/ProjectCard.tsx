@@ -29,8 +29,8 @@ export function ProjectCard({ project }: { project: PublicProject }) {
         ))}
       </div>
       <div className="mt-5 flex flex-wrap gap-4 text-xs text-[var(--muted)]">
-        <span className="inline-flex items-center gap-1">
-          <Eye size={14} /> {compactNumber(project.viewCount)}
+        <span className="inline-flex items-center gap-1" title="Page views on this site">
+          <Eye size={14} /> {compactNumber(project.viewCount)} views
         </span>
         <span className="inline-flex items-center gap-1">
           <Star size={14} /> {compactNumber(project.stars)}

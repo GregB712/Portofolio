@@ -22,9 +22,8 @@ const projectsToSeed = [
     ],
     tags: ["Generative AI", "RAG", "Agents", "LLMs", "Memory", "Retrieval"],
     category: ["GenAI", "Retrieval", "Agents"],
-    featured: true,
     priority: 1,
-    status: "featured"
+    status: "active"
   },
   {
     repoName: "would_you_rather_app",
@@ -48,9 +47,8 @@ const projectsToSeed = [
     ],
     tags: ["Next.js", "TypeScript", "PostgreSQL", "Prisma", "Full-stack", "Vercel", "Neon"],
     category: ["Full-stack"],
-    featured: true,
     priority: 2,
-    status: "featured"
+    status: "active"
   },
   {
     repoName: "custom-retrieval-pipeline-with-reranker",
@@ -83,9 +81,8 @@ const projectsToSeed = [
       "Information Retrieval"
     ],
     category: ["Retrieval", "ML Infrastructure", "NLP"],
-    featured: true,
     priority: 3,
-    status: "featured"
+    status: "active"
   },
   {
     repoName: "custom-vector-db",
@@ -109,9 +106,8 @@ const projectsToSeed = [
     ],
     tags: ["Python", "Vector Database", "ANN Search", "Similarity Search", "Metadata Filtering", "Algorithms"],
     category: ["ML Infrastructure", "Retrieval"],
-    featured: true,
     priority: 4,
-    status: "featured"
+    status: "active"
   },
   {
     repoName: "custom_embedding_model",
@@ -134,9 +130,8 @@ const projectsToSeed = [
     ],
     tags: ["Python", "Sentence-BERT", "Embeddings", "Semantic Search", "Fine-tuning", "NLP", "Retrieval"],
     category: ["NLP", "Retrieval", "ML"],
-    featured: true,
     priority: 5,
-    status: "featured"
+    status: "active"
   },
   {
     repoName: "custom-bpe-tokenizer",
@@ -160,9 +155,8 @@ const projectsToSeed = [
     ],
     tags: ["Python", "NLP", "Tokenization", "BPE", "WordPiece", "SentencePiece", "Hugging Face", "FastAPI"],
     category: ["NLP", "ML Infrastructure"],
-    featured: true,
     priority: 6,
-    status: "featured"
+    status: "active"
   },
   {
     repoName: "pdf-to-markdown-ai-converter",
@@ -185,9 +179,8 @@ const projectsToSeed = [
     ],
     tags: ["TypeScript", "PDF Processing", "Markdown", "AI Tools", "Document Processing", "RAG Preparation"],
     category: ["AI Tools", "Document Processing", "RAG"],
-    featured: true,
     priority: 7,
-    status: "featured"
+    status: "active"
   }
 ] satisfies Prisma.ProjectCreateInput[];
 
@@ -214,9 +207,16 @@ async function main() {
   if (archiveMissing) {
     await prisma.project.updateMany({
       where: { repoName: { notIn: Array.from(seededRepoNames) } },
-      data: { status: "archived", featured: false }
+      data: { status: "archived" }
     });
   }
+
+  // Featured = first 6 non-hidden projects by priority (mirrors syncFeaturedFlags in lib/projects.ts)
+  await prisma.$executeRaw`
+    UPDATE "Project" SET "featured" = "id" IN (
+      SELECT "id" FROM "Project" WHERE "status" <> 'hidden'
+      ORDER BY "priority" ASC, "createdAt" ASC LIMIT 6
+    )`;
 
   console.log(`Seeded ${projectsToSeed.length} projects.`);
 }
