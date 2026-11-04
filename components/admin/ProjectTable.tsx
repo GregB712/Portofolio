@@ -1,17 +1,23 @@
-import { Archive, EyeOff, Pencil, RefreshCw, Star, Trash2 } from "lucide-react";
+import { Archive, EyeOff, Pencil, RefreshCw, Trash2 } from "lucide-react";
 import Link from "next/link";
 import type { Project } from "@prisma/client";
 import {
   deleteProjectAction,
   reorderProjectAction,
   setProjectStatusAction,
-  syncProjectGithubAction,
-  toggleProjectFeaturedAction
+  syncProjectGithubAction
 } from "@/lib/admin-actions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SubmitButton } from "@/components/admin/SubmitButton";
+import { formatDate } from "@/lib/utils";
 
 export function ProjectTable({ projects }: { projects: Project[] }) {
+  // Position as a guest sees it on /projects (hidden projects excluded).
+  const guestPosition = new Map(
+    projects.filter((project) => project.status !== "hidden").map((project, index) => [project.id, index + 1])
+  );
+
   return (
     <div className="glass overflow-x-auto rounded-lg">
       <table className="w-full min-w-[980px] text-left text-sm">
@@ -39,6 +45,9 @@ export function ProjectTable({ projects }: { projects: Project[] }) {
               <td className="p-4">
                 <Badge>{project.status}</Badge>
                 {project.featured ? <Badge className="ml-2 border-[var(--accent)]">featured</Badge> : null}
+                <p className="mt-2 text-xs text-[var(--muted)]">
+                  {guestPosition.has(project.id) ? `#${guestPosition.get(project.id)} for guests` : "Not shown to guests"}
+                </p>
               </td>
               <td className="p-4">
                 <form action={reorderProjectAction} className="flex gap-2">
@@ -55,9 +64,15 @@ export function ProjectTable({ projects }: { projects: Project[] }) {
                 </form>
               </td>
               <td className="p-4 text-xs text-[var(--muted)]">
-                <p>{project.viewCount} views</p>
+                <p className="mb-1 font-semibold uppercase tracking-[0.14em]">Site</p>
+                <p>{project.viewCount} page views</p>
                 <p>{project.githubClickCount} repo clicks</p>
                 <p>{project.demoClickCount} demo clicks</p>
+                <p className="mb-1 mt-3 font-semibold uppercase tracking-[0.14em]">GitHub</p>
+                <p>{project.stars ?? "–"} stars</p>
+                <p>{project.forks ?? "–"} forks</p>
+                <p>{project.watchers ?? "–"} watchers</p>
+                <p>{project.githubUpdatedAt ? `updated ${formatDate(project.githubUpdatedAt)}` : "never synced"}</p>
               </td>
               <td className="p-4">
                 <div className="flex flex-wrap gap-2">
@@ -67,18 +82,11 @@ export function ProjectTable({ projects }: { projects: Project[] }) {
                   >
                     <Pencil size={14} /> Edit
                   </Link>
-                  <form action={toggleProjectFeaturedAction}>
-                    <input type="hidden" name="id" value={project.id} />
-                    <input type="hidden" name="featured" value={String(project.featured)} />
-                    <Button className="h-9 px-3" type="submit">
-                      <Star size={14} /> Toggle
-                    </Button>
-                  </form>
                   <form action={syncProjectGithubAction}>
                     <input type="hidden" name="id" value={project.id} />
-                    <Button className="h-9 px-3" type="submit">
+                    <SubmitButton variant="secondary" className="h-9 px-3">
                       <RefreshCw size={14} /> Sync
-                    </Button>
+                    </SubmitButton>
                   </form>
                   <form action={setProjectStatusAction}>
                     <input type="hidden" name="id" value={project.id} />

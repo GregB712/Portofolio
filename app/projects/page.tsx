@@ -90,7 +90,6 @@ export default async function ProjectsPage({
             <option value="updated">Recently updated</option>
             <option value="views">Most viewed</option>
             <option value="github">Most GitHub clicks</option>
-            <option value="priority">Custom priority</option>
           </select>
           <button className="focus-ring h-11 rounded-md bg-[var(--accent)] px-5 text-sm font-semibold text-black">
             Apply

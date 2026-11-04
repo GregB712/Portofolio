@@ -83,7 +83,14 @@ export function ProjectForm({ action, project, mode }: ProjectFormProps) {
           <Field label="Repo URL" name="repoUrl" value={values.repoUrl} onChange={set} required />
           <Field label="Deployment URL" name="deploymentUrl" value={values.deploymentUrl} onChange={set} />
           <Field label="Image URL" name="imageUrl" value={values.imageUrl} onChange={set} />
-          <Field label="Priority" name="priority" type="number" value={values.priority} onChange={set} />
+          <Field
+            label="Priority"
+            name="priority"
+            type="number"
+            value={values.priority}
+            onChange={set}
+            help="Lower shows first on /projects. The first 6 visible are featured on the home page."
+          />
           <Field label="Primary language" name="primaryLanguage" value={values.primaryLanguage} onChange={set} />
         </div>
         <Field label="Short description" name="description" value={values.description} onChange={set} required />
@@ -106,7 +113,6 @@ export function ProjectForm({ action, project, mode }: ProjectFormProps) {
               defaultValue={project?.status ?? "active"}
               className="focus-ring h-11 rounded-md border border-[var(--line)] bg-[var(--background)] px-3"
             >
-              <option value="featured">Featured</option>
               <option value="active">Active</option>
               <option value="archived">Archived</option>
               <option value="hidden">Hidden</option>
@@ -116,10 +122,6 @@ export function ProjectForm({ action, project, mode }: ProjectFormProps) {
           <Field label="Stars" name="stars" type="number" value={values.stars} onChange={set} />
           <Field label="Forks" name="forks" type="number" value={values.forks} onChange={set} />
         </div>
-        <label className="flex items-center gap-3 text-sm">
-          <input type="checkbox" name="featured" defaultChecked={project?.featured ?? false} />
-          Featured on homepage
-        </label>
         <div className="flex justify-end">
           <Button type="submit" variant="primary">
             {mode === "create" ? "Create project" : "Save project"}

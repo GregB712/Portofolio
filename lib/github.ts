@@ -3,6 +3,7 @@ export type GitHubRepoMetadata = {
   html_url: string;
   stargazers_count: number;
   forks_count: number;
+  subscribers_count?: number;
   language: string | null;
   updated_at: string;
   description: string | null;
@@ -60,7 +61,7 @@ export async function fetchGitHubRepo(owner: string, repo: string) {
         ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
         : {})
     },
-    next: { revalidate: 3600 }
+    cache: "no-store"
   });
 
   if (!response.ok) {

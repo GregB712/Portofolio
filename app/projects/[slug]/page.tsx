@@ -102,11 +102,12 @@ export default async function ProjectDetailPage({
           </div>
         </div>
 
-        <div className="mt-6 grid gap-5 md:grid-cols-4">
+        <div className="mt-6 grid gap-5 md:grid-cols-5">
           {[
-            ["Views", compactNumber(project.viewCount + 1)],
+            ["Site views", compactNumber(project.viewCount + 1)],
             ["Stars", compactNumber(project.stars)],
             ["Forks", compactNumber(project.forks)],
+            ["Watchers", compactNumber(project.watchers)],
             ["Updated", project.githubUpdatedAt ? formatDate(project.githubUpdatedAt) : "Manual"]
           ].map(([label, value]) => (
             <div key={label} className="glass rounded-lg p-4">

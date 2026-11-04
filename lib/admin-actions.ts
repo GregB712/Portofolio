@@ -12,6 +12,7 @@ import {
   siteContentSchema
 } from "@/lib/validations";
 import { fetchGitHubRepo, listGitHubRepos, type GithubRepoPrefill } from "@/lib/github";
+import { syncFeaturedFlags } from "@/lib/projects";
 import {
   educationDefaultsView,
   experienceDefaultsView,
@@ -87,6 +88,7 @@ export async function createProjectAction(formData: FormData) {
   await assertAdmin();
   const data = normalizeProjectData(formData);
   await prisma.project.create({ data });
+  await syncFeaturedFlags();
   revalidatePath("/");
   revalidatePath("/projects");
   redirect("/admin/projects");
@@ -101,6 +103,7 @@ export async function updateProjectAction(formData: FormData) {
     where: { id },
     data
   });
+  await syncFeaturedFlags();
 
   revalidatePath("/");
   revalidatePath("/projects");
@@ -111,39 +114,22 @@ export async function updateProjectAction(formData: FormData) {
 export async function deleteProjectAction(formData: FormData) {
   await assertAdmin();
   await prisma.project.delete({ where: { id: String(formData.get("id")) } });
+  await syncFeaturedFlags();
   revalidatePath("/");
-  revalidatePath("/projects");
-}
-
-export async function toggleProjectFeaturedAction(formData: FormData) {
-  await assertAdmin();
-  const id = String(formData.get("id"));
-  const featured = formData.get("featured") === "true";
-
-  await prisma.project.update({
-    where: { id },
-    data: { featured: !featured, status: !featured ? "featured" : "active" }
-  });
-
-  revalidatePath("/");
-  revalidatePath("/projects");
   revalidatePath("/admin/projects");
+  revalidatePath("/projects");
 }
 
 export async function setProjectStatusAction(formData: FormData) {
   await assertAdmin();
   const id = String(formData.get("id"));
-  const status = String(formData.get("status")) as
-    | "featured"
-    | "active"
-    | "archived"
-    | "hidden"
-    | "in_progress";
+  const status = String(formData.get("status")) as "active" | "archived" | "hidden" | "in_progress";
 
   await prisma.project.update({
     where: { id },
-    data: { status, featured: status === "featured" ? true : undefined }
+    data: { status }
   });
+  await syncFeaturedFlags();
 
   revalidatePath("/");
   revalidatePath("/projects");
@@ -156,6 +142,7 @@ export async function reorderProjectAction(formData: FormData) {
     where: { id: String(formData.get("id")) },
     data: { priority: Number(formData.get("priority")) }
   });
+  await syncFeaturedFlags();
   revalidatePath("/");
   revalidatePath("/projects");
   revalidatePath("/admin/projects");
@@ -173,6 +160,7 @@ export async function syncProjectGithubAction(formData: FormData) {
       repoUrl: project.repoUrl || metadata.html_url,
       stars: metadata.stargazers_count,
       forks: metadata.forks_count,
+      watchers: metadata.subscribers_count ?? null,
       primaryLanguage: metadata.language,
       githubUpdatedAt: new Date(metadata.updated_at),
       description: project.description || metadata.description || project.description

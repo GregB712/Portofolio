@@ -3,6 +3,7 @@ import { Plus } from "lucide-react";
 import { AdminHeader } from "@/components/layout/AdminHeader";
 import { ProjectTable } from "@/components/admin/ProjectTable";
 import { prisma } from "@/lib/prisma";
+import { PROJECT_ORDER } from "@/lib/projects";
 
 export const dynamic = "force-dynamic";
 
@@ -33,12 +34,12 @@ export default async function AdminProjectsPage({
       ...(status ? { status: status as never } : {}),
       ...(featured ? { featured: featured === "true" } : {})
     },
-    orderBy: [{ priority: "asc" }, { updatedAt: "desc" }]
+    orderBy: PROJECT_ORDER
   });
 
   return (
     <>
-      <AdminHeader title="Projects" subtitle="Create, edit, archive, reorder, hide, delete, and sync GitHub metadata." />
+      <AdminHeader title="Projects" subtitle="Priority sets the order guests see on /projects. The first 6 visible projects are featured on the home page." />
       <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <form className="glass grid gap-3 rounded-lg p-3 sm:grid-cols-4 lg:min-w-[720px]">
           <input
@@ -53,7 +54,6 @@ export default async function AdminProjectsPage({
             className="focus-ring h-10 rounded-md border border-[var(--line)] bg-[var(--background)] px-3 text-sm"
           >
             <option value="">All statuses</option>
-            <option value="featured">Featured</option>
             <option value="active">Active</option>
             <option value="archived">Archived</option>
             <option value="hidden">Hidden</option>

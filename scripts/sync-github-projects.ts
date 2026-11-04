@@ -21,6 +21,7 @@ async function fetchRepo(repo: string) {
     html_url: string;
     stargazers_count: number;
     forks_count: number;
+    subscribers_count: number;
     language: string | null;
     updated_at: string;
     description: string | null;
@@ -44,6 +45,7 @@ async function main() {
         description: force && metadata.description ? metadata.description : project.description,
         stars: metadata.stargazers_count,
         forks: metadata.forks_count,
+        watchers: metadata.subscribers_count,
         primaryLanguage: metadata.language,
         githubUpdatedAt: new Date(metadata.updated_at)
       }
