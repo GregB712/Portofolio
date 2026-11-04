@@ -52,7 +52,7 @@ export default function NotFound() {
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--accent-2)]">
             Missing endpoint
           </p>
-          <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[1.02] tracking-normal sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[1.02] sm:text-6xl lg:text-7xl">
             This page is outside the model&apos;s context window.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--muted)]">

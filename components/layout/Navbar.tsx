@@ -1,7 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
@@ -14,9 +16,11 @@ const links = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--background)]/76 backdrop-blur-xl">
+    <nav className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--background)]/76 backdrop-blur-xl backdrop-saturate-150">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="focus-ring flex items-center gap-3 rounded-md">
           <span className="grid h-9 w-9 place-items-center rounded-md border border-[var(--line)] bg-white/10 font-semibold">
@@ -30,7 +34,10 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="focus-ring rounded-md px-3 py-2 text-sm text-[var(--muted)] transition hover:text-[var(--foreground)]"
+              aria-current={isActive(link.href) ? "page" : undefined}
+              className={`focus-ring rounded-md px-3 py-2 text-sm transition hover:text-[var(--foreground)] ${
+                isActive(link.href) ? "bg-white/10 font-medium text-[var(--foreground)]" : "text-[var(--muted)]"
+              }`}
             >
               {link.label}
             </Link>
@@ -50,7 +57,8 @@ export function Navbar() {
             type="button"
             variant="ghost"
             className="h-10 w-10 px-0"
-            aria-label="Open menu"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
           >
             {open ? <X size={18} /> : <Menu size={18} />}
@@ -58,25 +66,41 @@ export function Navbar() {
         </div>
       </div>
 
-      {open ? (
-        <div className="border-t border-[var(--line)] px-4 py-3 md:hidden">
-          <div className="mx-auto grid max-w-7xl gap-2">
-            {links.map((link) => (
+      <AnimatePresence initial={false}>
+        {open ? (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+            className="border-t border-[var(--line)] px-4 py-3 md:hidden"
+          >
+            <div className="mx-auto grid max-w-7xl gap-2">
+              {links.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  className={`focus-ring rounded-md px-3 py-2 text-sm ${
+                    isActive(link.href) ? "bg-white/10 font-medium text-[var(--foreground)]" : "text-[var(--muted)]"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
               <Link
-                key={link.href}
-                href={link.href}
+                href="/admin"
                 onClick={() => setOpen(false)}
                 className="focus-ring rounded-md px-3 py-2 text-sm text-[var(--muted)]"
               >
-                {link.label}
+                Admin
               </Link>
-            ))}
-            <Link href="/admin" className="focus-ring rounded-md px-3 py-2 text-sm text-[var(--muted)]">
-              Admin
-            </Link>
-          </div>
-        </div>
-      ) : null}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </nav>
   );
 }

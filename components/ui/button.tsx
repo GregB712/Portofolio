@@ -19,7 +19,7 @@ export function Button({ className, variant = "secondary", ...props }: ButtonPro
   return (
     <button
       className={cn(
-        "focus-ring inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition",
+        "focus-ring inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition active:scale-[0.97] active:duration-100",
         variants[variant],
         className
       )}
@@ -41,7 +41,7 @@ export function LinkButton({
   ...props
 }: LinkButtonProps) {
   const classes = cn(
-    "focus-ring inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition",
+    "focus-ring inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold transition active:scale-[0.97] active:duration-100",
     variants[variant],
     className
   );

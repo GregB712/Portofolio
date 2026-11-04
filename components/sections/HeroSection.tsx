@@ -45,7 +45,7 @@ export function HeroSection({
           <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[var(--accent-2)]">
             {content.heroName}
           </p>
-          <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.02] tracking-normal sm:text-6xl lg:text-7xl">
+          <h1 className="mt-5 max-w-5xl text-5xl font-semibold leading-[1.02] sm:text-6xl lg:text-7xl">
             {content.heroTitle}
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-[var(--muted)]">
@@ -55,7 +55,7 @@ export function HeroSection({
             <TrackedLink
               href="/projects"
               eventName="page_view"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-black transition active:scale-[0.97] active:duration-100 hover:brightness-110"
             >
               View Projects <ArrowRight size={16} />
             </TrackedLink>
@@ -63,14 +63,14 @@ export function HeroSection({
               href={profile.cvPath}
               download
               eventName="cv_download"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--line)] px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--line)] px-5 py-3 text-sm font-semibold transition active:scale-[0.97] active:duration-100 hover:bg-white/10"
             >
               <Download size={16} /> Download CV
             </TrackedLink>
             <TrackedLink
               href="/contact"
               eventName="page_view"
-              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--line)] px-5 py-3 text-sm font-semibold transition hover:bg-white/10"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--line)] px-5 py-3 text-sm font-semibold transition active:scale-[0.97] active:duration-100 hover:bg-white/10"
             >
               <Mail size={16} /> Contact Me
             </TrackedLink>
@@ -84,7 +84,7 @@ export function HeroSection({
                   href={social.href}
                   target="_blank"
                   eventName={social.eventName}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[var(--line)] px-4 py-2 text-sm text-[var(--muted)] transition hover:text-[var(--foreground)]"
+                  className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[var(--line)] px-4 py-2 text-sm text-[var(--muted)] transition active:scale-[0.97] active:duration-100 hover:text-[var(--foreground)]"
                 >
                   {social.label === "GitHub" ? <Github size={16} /> : <Linkedin size={16} />}
                   <Icon className="hidden" size={0} />
