@@ -34,6 +34,8 @@ html {
 
 body {
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background:
     radial-gradient(circle at 12% 8%, rgba(61, 219, 217, 0.16), transparent 30rem),
     radial-gradient(circle at 82% 14%, rgba(214, 246, 93, 0.13), transparent 24rem),
@@ -76,22 +78,47 @@ a {
   color: inherit;
 }
 
+/* Size-aware type: large headings get tighter tracking and leading; body stays neutral.
+   In @layer base so per-element Tailwind utilities still win. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  h1 {
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
 ::selection {
   background: var(--accent);
   color: #101312;
 }
 
+/* Translucent material: a faint bright top edge reads as light catching the surface. */
 .glass {
   border: 1px solid var(--line);
   background: var(--panel);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(18px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 24px 80px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(18px) saturate(160%);
 }
 
 .glass-strong {
   border: 1px solid var(--line);
   background: var(--panel-strong);
-  backdrop-filter: blur(20px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 30px 90px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(24px) saturate(170%);
 }
 
 .focus-ring {
@@ -138,6 +165,25 @@ a {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Frostier, solid surfaces when the user asks for less transparency */
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .glass-strong {
+    background: var(--background);
+    backdrop-filter: none;
+  }
+}
+
+/* Defined edges when the user asks for more contrast */
+@media (prefers-contrast: more) {
+  .glass,
+  .glass-strong {
+    background: var(--background);
+    backdrop-filter: none;
+    border-color: var(--foreground);
   }
 }
 

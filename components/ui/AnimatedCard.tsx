@@ -17,7 +17,7 @@ export function AnimatedCard({
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.45, delay, ease: "easeOut" }}
+      transition={{ type: "spring", bounce: 0, duration: 0.5, delay }}
       className={cn("glass rounded-lg", className)}
     >
       {children}
