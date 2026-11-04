@@ -41,7 +41,7 @@ export async function listGitHubRepos(owner: string) {
           ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
           : {})
       },
-      next: { revalidate: 3600 }
+      cache: "no-store"
     }
   );
 

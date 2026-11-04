@@ -1,8 +1,7 @@
-import { Archive, EyeOff, Pencil, RefreshCw, Trash2 } from "lucide-react";
+import { Archive, EyeOff, Pencil, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import type { Project } from "@prisma/client";
 import {
-  deleteProjectAction,
   reorderProjectAction,
   setProjectStatusAction,
   syncProjectGithubAction
@@ -10,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SubmitButton } from "@/components/admin/SubmitButton";
+import { DeleteProjectButton } from "@/components/admin/DeleteProjectButton";
 import { formatDate } from "@/lib/utils";
 
 export function ProjectTable({ projects }: { projects: Project[] }) {
@@ -102,12 +102,7 @@ export function ProjectTable({ projects }: { projects: Project[] }) {
                       <EyeOff size={14} /> Hide
                     </Button>
                   </form>
-                  <form action={deleteProjectAction}>
-                    <input type="hidden" name="id" value={project.id} />
-                    <Button className="h-9 px-3" variant="danger" type="submit">
-                      <Trash2 size={14} /> Delete
-                    </Button>
-                  </form>
+                  <DeleteProjectButton id={project.id} title={project.title} />
                 </div>
               </td>
             </tr>
